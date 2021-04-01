@@ -15,7 +15,8 @@ namespace mastermind
 
             Console.WriteLine("Inputs:");
             Console.WriteLine(" 'rules' - to learn how to play");
-            Console.WriteLine(" 'play'  - to start playing\n");
+            Console.WriteLine(" 'play'  - to start playing");
+            Console.WriteLine(" 'quit'  - to exit the program\n");
 
             while (currentState != States.QUIT)
             {
@@ -38,6 +39,7 @@ namespace mastermind
         {
             if (input == "rules" && currentState == States.START) { printRules(); }
             if (input == "play" && currentState == States.START) { currentState = States.PLAYING; }
+            if (input == "quit" && currentState == States.START) { currentState = States.QUIT; }
         }
 
 
