@@ -4,7 +4,7 @@ namespace mastermind
 {
     class Program
     {
-        public enum States {START, NUMBERS, POSITIONS, PLAYING, CONFIRM, END, QUIT};
+        public enum States {START, NUMBERS, POSITIONS, PLAYING, CONFIRM, COMPARISON, END, QUIT};
         public static States currentState = States.START;
 
         public int numbersMax = 0;
@@ -86,7 +86,7 @@ namespace mastermind
                     Console.WriteLine("\n\nMake guess for position: {0}", guessCount + 1);
                 }
 
-                else 
+                else
                 {
                     Console.Clear();
 
@@ -109,6 +109,47 @@ namespace mastermind
                     Console.WriteLine(" 2. No");
                 }
 
+            }
+
+            if (currentState == States.COMPARISON)
+            {
+                int whitePegs = 0;
+                int blackPegs = 0;
+
+                for (int i=0; i<positions; i++)
+                {
+                    if (guess[i] == pattern[i])
+                    {
+                        blackPegs++;
+                        guess[i] = 0;
+                    }
+                }
+
+                for (int i = 0; i < positions; i++)
+                {
+                    for (int j = 0; j < positions; j++)
+                    {
+                        if (pattern[j] == guess[i])
+                        {
+                            whitePegs++;
+                            guess[i] = 0;
+                        }
+                    }
+
+                }
+
+                Console.WriteLine("Black pegs: {0}", blackPegs);
+                Console.WriteLine("White pegs: {0}", whitePegs);
+
+                if (positions == blackPegs) { currentState = States.END;}
+
+                else { currentState = States.PLAYING; }
+            }
+
+            if (currentState == States.END)
+            {
+                Console.WriteLine("THE END");
+                currentState = States.QUIT;
             }
         }
 
@@ -200,11 +241,24 @@ namespace mastermind
                 }
             }
 
-            else if (currentState == States.PLAYING)
+            else if (currentState == States.CONFIRM)
             {
                 if(input == "yes" || input == "1")
                 {
+                    currentState = States.COMPARISON;
+                }
 
+                else if (input == "no" || input == "2")
+                {
+                    Console.Clear();
+                    currentState = States.PLAYING;
+                    guessCount = 0;
+                    clearGuesses();
+                }
+
+                else
+                {
+                    Console.WriteLine("Invalid Input...");
                 }
             }
 
@@ -246,6 +300,15 @@ namespace mastermind
                 pattern[i] = randomNumber;
                 //Console.Write(pattern[i] + "");
             }
+        }
+
+        public void clearGuesses()
+        {
+            for (int i = 0; i < positions; i++)
+            {
+                guess[i] = 0;
+            }
+
         }
     }
 }
