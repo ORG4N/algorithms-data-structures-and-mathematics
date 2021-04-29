@@ -4,13 +4,15 @@ namespace mastermind
 {
     class Program
     {
-        public enum States {START, NUMBERS, POSITIONS, PLAYING, END, QUIT};
+        public enum States {START, NUMBERS, POSITIONS, PLAYING, CONFIRM, END, QUIT};
         public static States currentState = States.START;
 
         public int numbersMax = 0;
         public int positions = 0;
 
-        public int[] pattern = new int[0]; 
+        public int[] pattern = new int[0];
+        public int[] guess = new int[0];
+        public int guessCount = 0;
 
         static void Main(string[] args)
         {
@@ -61,12 +63,52 @@ namespace mastermind
 
             if (currentState == States.PLAYING)
             {
-                Console.Clear();
-                Console.WriteLine("\nRange of numbers   : 1 to {0}", numbersMax);
-                Console.WriteLine("Amount of positions: {0}\n", positions);
+                if (guessCount < positions)
+                {
+                    //Console.Clear();
+                    Console.WriteLine("\nRange of numbers   : 1 to {0}", numbersMax);
+                    Console.WriteLine("Amount of positions: {0}\n", positions);
 
-                pattern = new int[positions];
-                getPattern();
+                    Console.WriteLine("Player A has created a pattern of {0} size...\n", positions);
+
+                    Console.Write("Position  : ");
+                    for (int i = 0; i < positions; i++)
+                    {
+                        Console.Write("{0} ", i + 1);
+                    }
+
+                    Console.Write("\nGuess     : ");
+                    for (int j = 0; j < positions; j++)
+                    {
+                        Console.Write("{0} ", guess[j]);
+                    }
+
+                    Console.WriteLine("\n\nMake guess for position: {0}", guessCount + 1);
+                }
+
+                else 
+                {
+                    Console.Clear();
+
+                    currentState = States.CONFIRM;
+
+                    Console.Write("Position  : ");
+                    for (int i = 0; i < positions; i++)
+                    {
+                        Console.Write("{0} ", i + 1);
+                    }
+
+                    Console.Write("\nGuess     : ");
+                    for (int j = 0; j < positions; j++)
+                    {
+                        Console.Write("{0} ", guess[j]);
+                    }
+
+                    Console.WriteLine("\n\nConfirm pattern?");
+                    Console.WriteLine(" 1. Yes");
+                    Console.WriteLine(" 2. No");
+                }
+
             }
         }
 
@@ -123,6 +165,11 @@ namespace mastermind
                     if (num > 0)
                     {
                         positions = num;
+                        pattern = new int[positions];
+                        guess = new int[positions];
+
+                        getPattern();
+
                         currentState = States.PLAYING;
                     }
 
@@ -131,6 +178,36 @@ namespace mastermind
 
                 else {Console.WriteLine("\nINVALID INPUT - Input must be a number and greater than 1\n");}
             }
+
+            else if (currentState == States.PLAYING)
+            {
+                int num;
+                bool isNumber = Int32.TryParse(input, out num);
+
+                if (guessCount <= numbersMax)
+                {
+                    if (isNumber && num > 0 && num <= numbersMax)
+                    {
+                        guess[guessCount] = num;
+                        guessCount++;
+                    }
+
+                    else
+                    {
+                        Console.WriteLine("Input must be a NUMBER between the range of 1 and {0}", numbersMax);
+                    }
+
+                }
+            }
+
+            else if (currentState == States.PLAYING)
+            {
+                if(input == "yes" || input == "1")
+                {
+
+                }
+            }
+
         }
 
 
