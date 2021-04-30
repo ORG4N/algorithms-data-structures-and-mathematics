@@ -61,6 +61,69 @@ namespace mastermind
                 Console.WriteLine(" - Input must be an integer greater than 1");
             }
 
+            if (currentState == States.COMPARISON)
+            {
+                int whitePegs = 0;
+                int blackPegs = 0;
+
+                int[] copy = new int[positions];
+
+                for (int i = 0; i < positions; i++)
+                {
+                    copy[i] = pattern[i];
+                }
+
+                for (int i = 0; i < positions; i++)
+                {
+                    if (guess[i] == pattern[i] && pattern[i] != 0)
+                    {
+                        blackPegs++;
+                        pattern[i] = 0;
+                        guess[i] = 0;
+                    }
+                }
+
+                for (int i = 0; i < positions; i++)
+                { 
+                    for (int j = 0; j < positions; j++)
+                    {
+                        if (pattern[j] == guess[i] && pattern[j] != 0)
+                        {
+                            whitePegs++;
+                            pattern[j] = 0;
+                            guess[i] = 0;
+                        }
+                    } 
+                }
+
+                Console.WriteLine("Black pegs: {0}", blackPegs);
+                Console.WriteLine("White pegs: {0}", whitePegs);
+
+                if (positions == blackPegs) 
+                { 
+                    currentState = States.END;
+                    guessCount = 0;
+                    clearGuesses();
+                }
+
+                else 
+                {
+                    Console.WriteLine("\n--------------");
+                    Console.WriteLine("Guess again...");
+                    Console.WriteLine("--------------\n");
+
+                    currentState = States.PLAYING;
+                    guessCount = 0;
+                    clearGuesses();
+                }
+            }
+            
+            if (currentState == States.END)
+            {
+                Console.WriteLine("THE END");
+                currentState = States.QUIT;
+            }
+
             if (currentState == States.PLAYING)
             {
                 if (guessCount < positions)
@@ -108,48 +171,6 @@ namespace mastermind
                     Console.WriteLine(" 1. Yes");
                     Console.WriteLine(" 2. No");
                 }
-
-            }
-
-            if (currentState == States.COMPARISON)
-            {
-                int whitePegs = 0;
-                int blackPegs = 0;
-
-                for (int i=0; i<positions; i++)
-                {
-                    if (guess[i] == pattern[i])
-                    {
-                        blackPegs++;
-                        guess[i] = 0;
-                    }
-                }
-
-                for (int i = 0; i < positions; i++)
-                {
-                    for (int j = 0; j < positions; j++)
-                    {
-                        if (pattern[j] == guess[i])
-                        {
-                            whitePegs++;
-                            guess[i] = 0;
-                        }
-                    }
-
-                }
-
-                Console.WriteLine("Black pegs: {0}", blackPegs);
-                Console.WriteLine("White pegs: {0}", whitePegs);
-
-                if (positions == blackPegs) { currentState = States.END;}
-
-                else { currentState = States.PLAYING; }
-            }
-
-            if (currentState == States.END)
-            {
-                Console.WriteLine("THE END");
-                currentState = States.QUIT;
             }
         }
 
@@ -298,7 +319,7 @@ namespace mastermind
             {
                 int randomNumber = getNumber();
                 pattern[i] = randomNumber;
-                //Console.Write(pattern[i] + "");
+                Console.Write(pattern[i] + "");
             }
         }
 
