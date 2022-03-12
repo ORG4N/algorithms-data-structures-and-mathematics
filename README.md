@@ -1,2 +1,2 @@
 # mastermind
-COMP 1002 Coursework
+COMP 1003 Coursework
